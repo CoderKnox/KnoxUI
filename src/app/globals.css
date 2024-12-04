@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+@layer base {
+  .button-ripple {
+    @apply animate-ping absolute inline-flex rounded-full bg-white opacity-50;
+  }
+
+  .bg-base-100 {
+    @apply bg-white dark:bg-slate-700;
+  }
+
+  .bg-base-200 {
+    @apply bg-slate-100 dark:bg-slate-800;
+  }
+
+  .bg-base-300 {
+    @apply bg-slate-200 dark:bg-slate-900;
+  }
+
+  .border, .border-r, .border-l, .border-t, .border-b {
+    @apply dark:border-white border-black !border-opacity-25;
+  }
+
+  .table-hard {
+    @apply w-full border-collapse [&>*_th]:border [&>*_td]:border;
+  }
+}
+
