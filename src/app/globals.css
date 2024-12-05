@@ -6,12 +6,34 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 255, 255, 255;
+  --color-primary: #3b82f6;
+  --color-secondary: #6b7280;
+  --color-success : #10b981;
+  --color-warning : #fbbf24;
+  --color-error   : #ef4444;
+  --color-info    : #38bdf8;
+  --color-ghost   : transparent;
+  --color-base-100: #ffffff;
+  --color-base-200: #f8f8f9;
+  --color-base-300: #f1f1f4;
+  --color-base-400: #eaeaee;
 }
 
 .dark {
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 0, 0, 0;
+  --color-primary : #3575dd;
+  --color-secondary: #5b616d;
+  --color-success : #0e9d6e;
+  --color-warning : #d5a21f;
+  --color-error   : #cb3a3a;
+  --color-info    : #30a1d3;
+  --color-ghost   : transparent;
+  --color-base-100: #1f1f26;
+  --color-base-200: #141419;
+  --color-base-300: #0a0a0d;
+  --color-base-400: #000000;
 }
 
 body {
@@ -22,22 +44,6 @@ body {
 @layer base {
   .button-ripple {
     @apply animate-ping absolute inline-flex rounded-full bg-white opacity-50;
-  }
-
-  .bg-base-100 {
-    @apply bg-white dark:bg-slate-700;
-  }
-
-  .bg-base-200 {
-    @apply bg-slate-100 dark:bg-slate-800;
-  }
-
-  .bg-base-300 {
-    @apply bg-slate-200 dark:bg-slate-900;
-  }
-
-  .border, .border-r, .border-l, .border-t, .border-b {
-    @apply dark:border-white border-black !border-opacity-25;
   }
 
   .table-hard {

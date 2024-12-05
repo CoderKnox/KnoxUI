@@ -8,10 +8,11 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="bg-base-200 py-1 px-4 sticky top-0 h-11">
+    <header className="bg-base-200 py-1 px-4 sticky top-0 h-11 z-50">
       <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold">
-          KnoxUI
+        <Link href="/" className="text-2xl font-bold flex items-end space-x-2">
+          <h1>KnoxUI</h1>
+          <h6 className='text-xs pb-1 text-primary'>1.0.1</h6>
         </Link>
         <nav className="flex items-center space-x-4">
           <ul className="flex space-x-4">

@@ -8,12 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: colors.blue,
-        secondary: colors.gray,
-        success: colors.green,
-        warning: colors.yellow,
-        error: colors.red,
-        info: colors.sky,
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
+        error: 'var(--color-error)',
+        info: 'var(--color-info)',
+        ghost: 'var(--color-ghost)',
+        'base-100': 'var(--color-base-100)',
+        'base-200': 'var(--color-base-200)',
+        'base-300': 'var(--color-base-300)',
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -44,7 +48,7 @@ module.exports = {
     },
   },
   plugins: [
-    function({ addUtilities, theme, variants }) {
+    function({ addUtilities, variants }) {
       const newUtilities = {
         '.animate-ripple': {
           '@keyframes ripple': {

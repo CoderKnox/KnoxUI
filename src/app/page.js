@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="flex h-full flex-col items-center justify-center p-24 space-y-8 bg-base-100">
+    <main className="flex h-full flex-col items-center justify-center p-24 space-y-8">
       <h1 className="text-4xl font-bold">Knox-UI Component Library</h1>
       
       <p className="text-xl text-center max-w-2xl">
@@ -13,7 +13,7 @@ export default function Home() {
         Explore our components and their documentation to build sleek and efficient user interfaces.
       </p>
 
-      <Link href="/components" className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded">
+      <Link href="/components" className="text-white font-bold py-2 px-4 rounded">
         View Button Documentation
       </Link>
 

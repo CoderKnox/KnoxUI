@@ -51,6 +51,12 @@ export default function ButtonDocs() {
               <td className="border border-gray-300 p-2">Shows a loading spinner when true</td>
             </tr>
             <tr>
+              <td className="border border-gray-300 p-2">disabled</td>
+              <td className="border border-gray-300 p-2">boolean</td>
+              <td className="border border-gray-300 p-2">false</td>
+              <td className="border border-gray-300 p-2">Prevent click event when true</td>
+            </tr>
+            <tr>
               <td className="border border-gray-300 p-2">className</td>
               <td className="border border-gray-300 p-2">string</td>
               <td className="border border-gray-300 p-2">""</td>
@@ -79,6 +85,9 @@ import Button from '../components/Button';
 
 // Ghost button
 <Button color="ghost">Ghost Button</Button>
+
+// Disabled button
+<Button disabled={true}>Ghost Button</Button>
           `}</code>
         </pre>
       </section>
@@ -118,9 +127,14 @@ import Button from '../components/Button';
           </div>
         </div>
 
-        <div>
+        <div className='mb-8'>
           <h3 className="text-xl font-semibold mb-2">Loading State</h3>
           <Button isLoading={true}>Loading Button</Button>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-semibold mb-2">Disabled</h3>
+          <Button disabled={true}>Don't Click</Button>
         </div>
       </section>
     </div>

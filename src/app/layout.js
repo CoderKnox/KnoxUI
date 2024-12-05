@@ -12,11 +12,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <ThemeProvider>
-        <body className="bg-base-200 text-gray-900 dark:text-white">
+        <body className="bg-base-200 text-gray-900 dark:text-white pr-2">
           <Header />
           <div className="flex">
             <Sidebar />
-            <main className="flex-grow bg-base-100 rounded-tl-lg p-2">
+            <main className="flex-grow bg-base-100 w-full h-full rounded-lg p-2">
               {children}
             </main>
           </div>
