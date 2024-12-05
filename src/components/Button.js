@@ -12,7 +12,7 @@ const colorClasses = {
   success: 'bg-success-500 hover:bg-success-600 text-white',
   warning: 'bg-warning-500 hover:bg-warning-600 text-white',
   error: 'bg-error-500 hover:bg-error-600 text-white',
-  ghost: 'bg-transparent hover:bg-gray-100 text-gray-800',
+  ghost: 'bg-transparent hover:bg-gray-100 text-gray-800 dark:text-gray-100 dark:hover:bg-gray-800/50',
 };
 
 const clickEffects = {

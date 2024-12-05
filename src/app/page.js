@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '../components/Button';
+import Button from '@/components/Button';
 import Link from 'next/link';
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
         Explore our components and their documentation to build sleek and efficient user interfaces.
       </p>
 
-      <Link href="/button-docs" className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded">
+      <Link href="/components" className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded">
         View Button Documentation
       </Link>
 

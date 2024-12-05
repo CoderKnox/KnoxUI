@@ -11,7 +11,7 @@ const Header = () => {
     <header className="bg-base-200 py-1 px-4 sticky top-0 h-11">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold">
-          Knox-UI
+          KnoxUI
         </Link>
         <nav className="flex items-center space-x-4">
           <ul className="flex space-x-4">

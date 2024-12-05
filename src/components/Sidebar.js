@@ -2,8 +2,7 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   const components = [
-    { name: 'Button', path: '/button' },
-    // Add more components here as they are created
+    { name: 'Button', path: '/components/button' },
   ];
 
   return (
