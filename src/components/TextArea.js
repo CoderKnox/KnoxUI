@@ -19,7 +19,7 @@ const colorClasses = {
 
 const baseClasses = 'w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300';
 
-export default function TextArea({
+function TextArea({
   label,
   size = 'm',
   color,
@@ -48,3 +48,5 @@ export default function TextArea({
     </div>
   )
 }
+
+export default TextArea

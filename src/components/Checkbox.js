@@ -11,7 +11,7 @@ const colorClasses = {
 
 const baseClasses= 'w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300 flex'
 
-export default function({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, ...props}){
+function Checkbox({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, ...props}){
   var sizeClasses = {
     xs: !label ? 'h-3 w-3' : 'p-0.5 text-xs',
     s: !label ? 'h-4 w-4' : 'p-1 text-sm',
@@ -42,4 +42,4 @@ export default function({checked=false, size='m', color='primary', label, onChan
   </>)
 }
 
-
+export default Checkbox

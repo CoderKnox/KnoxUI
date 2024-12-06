@@ -19,7 +19,7 @@ const colorClasses = {
 
 const baseClasses = 'w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300';
 
-export default function Input({label, size='m', color, type='text', required, className, wrapperClass, labelClass, labelTextClass, sx, ...props }){
+function Input({label, size='m', color, type='text', required, className, wrapperClass, labelClass, labelTextClass, sx, ...props }){
   return (
     <div className={wrapperClass} style={sx}>
       <label className={`flex flex-col items-start ${labelClass}`}>
@@ -34,4 +34,6 @@ export default function Input({label, size='m', color, type='text', required, cl
     </div>
   )
 }
+
+export default Input
 

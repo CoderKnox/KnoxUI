@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import menu from '@/data/menu.json';
 
-const Sidebar = () => {
+function Sidebar(){
   return (
     <aside className="bg-base-200 w-64 h-[calc(100vh_-_44px)] p-4 sticky top-11">
       <Link href={'/components'}>

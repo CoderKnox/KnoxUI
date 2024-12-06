@@ -28,7 +28,7 @@ const bgColorClasses = {
 
 const baseClasses = 'w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300 flex items-center'
 
-export default function Radio({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, isButton=false, ...props}){
+function Radio({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, isButton=false, ...props}){
   if (isButton) {
     return (
       <label className={`${baseClasses} ${sizeClasses[size]} ${colorClasses[color]} ${checked ? bgColorClasses[color] : ''} ${className} cursor-pointer`} style={sx}>
@@ -73,3 +73,4 @@ export default function Radio({checked=false, size='m', color='primary', label, 
   )
 }
 
+export default Radio

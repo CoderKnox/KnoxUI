@@ -25,7 +25,7 @@ const aggregate = (group, field, func) => {
   }
 };
 
-const PivotTable = ({ data }) => {
+function PivotTable({ data }){
   // State for pivot configuration
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);

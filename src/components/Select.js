@@ -23,7 +23,7 @@ const colorClasses = {
 const baseClasses =
   "w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300";
 
-const Select = ({
+function Select({
   options = [],
   placeholder = "Select an option",
   multiple = false,
@@ -39,7 +39,7 @@ const Select = ({
   sx,
   renderOption,
   hideSearch = false,
-}) => {
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
