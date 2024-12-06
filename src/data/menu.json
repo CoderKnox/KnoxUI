@@ -19,5 +19,8 @@
 }, {
     "name": "Select",
     "link": "/components/select"
+}, {
+    "name": "Table",
+    "link": "/components/table"
 }
 ]

@@ -13,21 +13,13 @@ const baseClasses= 'w-full border rounded-md transition-all duration-200 focus:s
 
 export default function({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, ...props}){
   var sizeClasses = {
-    xs: 'p-0.5 text-xs',
-    s: 'p-1 text-sm',
-    m: 'p-1.5 text-base',
-    l: 'p-2 text-lg',
-    xl: 'p-3 text-xl',
+    xs: !label ? 'h-3 w-3' : 'p-0.5 text-xs',
+    s: !label ? 'h-4 w-4' : 'p-1 text-sm',
+    m: !label ? 'h-5 w-5' : 'p-1.5 text-base',
+    l: !label ? 'h-6 w-6' : 'p-2 text-lg',
+    xl: !label ? 'h-7 w-7' : 'p-3 text-xl',
   };
-  if (!label) {
-    sizeClasses = {
-      xs: 'h-3 w-3',
-      s: 'h-4 w-4',
-      m: 'h-5 w-5',
-      l: 'h-6 w-6',
-      xl: 'h-7 w-7',
-    };
-  }
+
   return (<>
   {
     label 

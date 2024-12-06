@@ -1,49 +1,75 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+const sizeClasses = {
+  xs: 'p-0.5 text-xs',
+  s: 'p-1 text-sm',
+  m: 'p-1.5 text-base',
+  l: 'p-2 text-lg',
+  xl: 'p-3 text-xl',
+};
 
-const Radio = ({ options, name, value: initialValue, onChange, className = '', buttonStyle = false }) => {
-  const [selectedValue, setSelectedValue] = useState(initialValue)
+const colorClasses = {
+  primary: 'border-primary outline-primary accent-primary',
+  secondary: 'border-secondary outline-secondary accent-secondary',
+  success: 'border-success outline-success accent-success',
+  warning: 'border-warning outline-warning accent-warning',
+  error: 'border-error outline-error accent-error',
+  ghost: 'border-ghost focus:border-base-300 outline-none',
+};
 
-  const handleChange = (e) => {
-    setSelectedValue(e.target.value)
-    onChange && onChange(e)
+const bgColorClasses = {
+  primary: 'bg-primary',
+  secondary: 'bg-secondary',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  error: 'bg-error',
+  ghost: 'bg-base-300',
+};
+
+const baseClasses = 'w-full border rounded-md transition-all duration-200 focus:shadow-lg bg-base-200 border-base-300 flex items-center'
+
+export default function Radio({checked=false, size='m', color='primary', label, onChange, className, wrapperClass, sx, isButton=false, ...props}){
+  if (isButton) {
+    return (
+      <label className={`${baseClasses} ${sizeClasses[size]} ${colorClasses[color]} ${checked ? bgColorClasses[color] : ''} ${className} cursor-pointer`} style={sx}>
+        <input 
+          type="radio" 
+          checked={checked} 
+          onChange={onChange}
+          className="sr-only"
+          {...props}
+        />
+        <span className={`w-full text-center ${checked ? 'text-white' : ''}`}>{label}</span>
+      </label>
+    )
   }
 
-  const baseClasses = 'inline-flex items-center cursor-pointer'
-  const radioClasses = buttonStyle
-    ? 'px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-    : 'mr-4'
-
   return (
-    <div className={`space-y-2 ${className}`}>
-      {options.map((option) => (
-        <label key={option.value} className={`${baseClasses} ${radioClasses}`}>
-          <input
-            type="radio"
-            name={name}
-            value={option.value}
-            checked={selectedValue === option.value}
-            onChange={handleChange}
-            className={buttonStyle ? 'sr-only' : 'mr-2'}
+    <>
+    {
+      label ?
+      <div className={wrapperClass} style={sx}>
+        <label className={`${baseClasses} ${sizeClasses[size]} ${checked ? bgColorClasses[color] : ''}`}>
+          <input 
+            type="radio" 
+            checked={checked} 
+            className={`${colorClasses[color]} ${className}`}
+            onChange={onChange}
+            {...props}
           />
-          {buttonStyle ? (
-            <span
-              className={`${
-                selectedValue === option.value
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              } transition-colors duration-300`}
-            >
-              {option.label}
-            </span>
-          ) : (
-            <span>{option.label}</span>
-          )}
+          <span className={`ml-2 ${checked ? 'text-white' : ''}`}>{label}</span>
         </label>
-      ))}
-    </div>
+      </div> :
+      <input 
+        type="radio" 
+        className={`${colorClasses[color]} ${className} ${checked ? bgColorClasses[color] : ''}`} 
+        checked={checked} 
+        onChange={onChange} 
+        style={sx} 
+        {...props} 
+      />
+    }
+    </>
   )
 }
 
-export default Radio
