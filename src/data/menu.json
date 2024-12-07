@@ -1,26 +1,38 @@
-[{
+[
+  {
     "name": "Home",
     "link": "/"
-}, {
+  },
+  {
     "name": "Button",
     "link": "/components/button"
-}, {
+  },
+  {
     "name": "Input",
     "link": "/components/input"
-}, {
+  },
+  {
     "name": "Text Area",
     "link": "/components/textarea"
-}, {
+  },
+  {
     "name": "Checkbox",
     "link": "/components/checkbox"
-}, {
+  },
+  {
     "name": "Radio",
     "link": "/components/radio"
-}, {
+  },
+  {
     "name": "Select",
     "link": "/components/select"
-}, {
+  },
+  {
+    "name": "Pivot Table",
+    "link": "/components/pivot-table"
+  },
+  {
     "name": "Table",
     "link": "/components/table"
-}
+  }
 ]
