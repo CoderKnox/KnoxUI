@@ -1,17 +1,16 @@
 'use client'
+// V0.1
 
 import React from 'react'
 
-export function PivotTable({ initialData }) {
-  const sortData = (data, fields) => {
-    return [...data].sort((a, b) => {
-      for (let field of fields) {
-        if (a[field] < b[field]) return -1;
-        if (a[field] > b[field]) return 1;
-      }
-      return 0;
-    });
-  };
+export default function PivotTable() {
+  const initialData = [
+    { buyer: 'Zara', style: 'XYZ', orderNumber: 'OD001', color: 'Red', orderQty: 1000, pricePerPcs: 200 },
+    { buyer: 'Zara', style: 'XYZ', orderNumber: 'OD002', color: 'Blue', orderQty: 1000, pricePerPcs: 200 },
+    { buyer: 'Zara', style: 'SDF', orderNumber: 'OD003', color: 'White', orderQty: 800, pricePerPcs: 300 },
+    { buyer: 'H&M', style: 'SDF', orderNumber: 'OD004', color: 'White', orderQty: 800, pricePerPcs: 400 },
+    { buyer: 'Lindex', style: 'XXY', orderNumber: 'OD005', color: 'Black', orderQty: 800, pricePerPcs: 400 },
+  ]
 
   const [data] = React.useState(initialData)
   const [values, setValues] = React.useState([])
@@ -21,12 +20,9 @@ export function PivotTable({ initialData }) {
   const [draggedValue, setDraggedValue] = React.useState(null)
   const [swapValueColumns, setSwapValueColumns] = React.useState(false)
 
-  const availableFields = React.useMemo(() => {
-    const selectedFields = [...values, ...rows, ...columns]
-    return ['buyer', 'style', 'orderNumber', 'color', 'orderQty', 'pricePerPcs'].filter(
-      field => !selectedFields.includes(field)
-    )
-  }, [values, rows, columns])
+  const availableFields = [
+    'buyer', 'style', 'orderNumber', 'color', 'orderQty', 'pricePerPcs'
+  ]
 
   const handleDragStart = (e, field) => {
     e.dataTransfer.setData('field', field)
@@ -114,81 +110,22 @@ export function PivotTable({ initialData }) {
   }
 
   const groupData = () => {
-    const sortedData = sortData(data, rows);
-    return sortedData.reduce((acc, item) => {
-      const rowKey = rows.map(field => item[field]).join('-');
+    return data.reduce((acc, item) => {
+      const rowKey = rows.map(field => item[field]).join('-')
+      
       if (!acc[rowKey]) {
-        acc[rowKey] = [];
+        acc[rowKey] = []
       }
-      acc[rowKey].push(item);
-      return acc;
-    }, {});
-  };
-
-  const shouldRenderCell = (rowIndex, cellIndex, uniqueRows) => {
-    if (rowIndex === 0) return true;
-    
-    const currentRow = uniqueRows[rowIndex].split('-')
-    const previousRow = uniqueRows[rowIndex - 1].split('-')
-    
-    // Check if all parent values match
-    for (let i = 0; i <= cellIndex; i++) {
-      if (currentRow[i] !== previousRow[i]) return true
-    }
-    
-    return false
-  }
-
-  const getRowSpan = (rowIndex, cellIndex, uniqueRows) => {
-    const currentRow = uniqueRows[rowIndex].split('-')
-    let span = 1
-    
-    for (let i = rowIndex + 1; i < uniqueRows.length; i++) {
-      const nextRow = uniqueRows[i].split('-')
-      let shouldSpan = true
+      acc[rowKey].push(item)
       
-      // Check if all parent values match
-      for (let j = 0; j <= cellIndex; j++) {
-        if (nextRow[j] !== currentRow[j]) {
-          shouldSpan = false
-          break
-        }
-      }
-      
-      if (shouldSpan) {
-        span++
-      } else {
-        break
-      }
-    }
-    
-    return span
+      return acc
+    }, {})
   }
 
   const renderTable = () => {
-    const groupedData = groupData();
-    const uniqueRows = [...new Set(data.map(item => rows.map(field => item[field]).join('-')))];
-    const sortedUniqueRows = sortData(
-      uniqueRows.map(row => {
-        const fields = row.split('-');
-        return rows.reduce((obj, field, index) => {
-          obj[field] = fields[index];
-          return obj;
-        }, {});
-      }),
-      rows
-    ).map(row => rows.map(field => row[field]).join('-'));
-    const columnValues = columns.length > 0 ? getUniqueColumnValues(columns[0]) : [];
-
-    // Group rows by their parent values
-    const groupedRows = sortedUniqueRows.reduce((acc, row) => {
-      const parentKey = row.split('-').slice(0, -1).join('-');
-      if (!acc[parentKey]) {
-        acc[parentKey] = [];
-      }
-      acc[parentKey].push(row);
-      return acc;
-    }, {});
+    const groupedData = groupData()
+    const uniqueRows = [...new Set(data.map(item => rows.map(field => item[field]).join('-')))]
+    const columnValues = columns.length > 0 ? getUniqueColumnValues(columns[0]) : []
 
     return (
       <div className="overflow-x-auto">
@@ -272,92 +209,47 @@ export function PivotTable({ initialData }) {
             )}
           </thead>
           <tbody>
-            {Object.entries(groupedRows).map(([parentKey, groupRows]) => (
-              <React.Fragment key={parentKey}>
-                {groupRows.map((row, rowIndex) => {
-                  const rowData = groupedData[row];
-                  const cells = row.split('-');
-                  
-                  return (
-                    <tr key={row}>
-                      {cells.map((cell, cellIndex) => {
-                        if (!shouldRenderCell(rowIndex, cellIndex, groupRows)) {
-                          return null;
-                        }
-                        
-                        const rowSpan = getRowSpan(rowIndex, cellIndex, groupRows);
-                        return (
-                          <td key={cellIndex} rowSpan={rowSpan}>
-                            {cell}
-                          </td>
-                        );
-                      })}
-                      {columns.length > 0 
-                        ? (!swapValueColumns 
-                            ? values.map(valueField => 
-                                columnValues.map(colValue => (
-                                  <td key={`${valueField}-${colValue}`}>
-                                    {calculateValue(rowData, valueField, colValue)}
-                                  </td>
-                                ))
-                              )
-                            : columnValues.map(colValue => 
-                                values.map(valueField => (
-                                  <td key={`${colValue}-${valueField}`}>
-                                    {calculateValue(rowData, valueField, colValue)}
-                                  </td>
-                                ))
-                              )
-                          )
-                        : values.map(valueField => (
-                            <td key={valueField}>
-                              {calculateValue(rowData, valueField)}
-                            </td>
-                          ))
-                      }
-                    </tr>
-                  );
-                })}
-                <tr className="bg-gray-700 font-bold">
-                  {rows.map((_, index) => (
-                    index === rows.length - 1 && (
-                      <td key={index} colSpan={rows.length}>Sum</td>
-                    )
+            {uniqueRows.map(row => {
+              const rowData = groupedData[row]
+              return (
+                <tr key={row}>
+                  {row.split('-').map((cell, i) => (
+                    <td key={i}>{cell}</td>
                   ))}
                   {columns.length > 0 
                     ? (!swapValueColumns 
                         ? values.map(valueField => 
                             columnValues.map(colValue => (
                               <td key={`${valueField}-${colValue}`}>
-                                {groupRows.reduce((sum, row) => sum + calculateValue(groupedData[row], valueField, colValue), 0)}
+                                {calculateValue(rowData, valueField, colValue)}
                               </td>
                             ))
                           )
                         : columnValues.map(colValue => 
                             values.map(valueField => (
                               <td key={`${colValue}-${valueField}`}>
-                                {groupRows.reduce((sum, row) => sum + calculateValue(groupedData[row], valueField, colValue), 0)}
+                                {calculateValue(rowData, valueField, colValue)}
                               </td>
                             ))
                           )
                       )
                     : values.map(valueField => (
                         <td key={valueField}>
-                          {groupRows.reduce((sum, row) => sum + calculateValue(groupedData[row], valueField), 0)}
+                          {calculateValue(rowData, valueField)}
                         </td>
                       ))
                   }
                 </tr>
-              </React.Fragment>
-            ))}
+              )
+            })}
           </tbody>
         </table>
       </div>
-    );
-  };
+    )
+  }
 
   return (
-    <div className="p-4 bg-gray-900 text-white">
+    <div className="p-4 bg-gray-900 text-white min-h-screen">
       <div className="grid grid-cols-4 gap-4 mb-4">
         <div
           className="border border-gray-600 p-4 rounded"
@@ -382,12 +274,7 @@ export function PivotTable({ initialData }) {
             </label>
           </div>
           {values.map(field => (
-            <div 
-              key={field} 
-              className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center"
-              draggable
-              onDragStart={(e) => handleDragStart(e, field)}
-            >
+            <div key={field} className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center">
               <span>{field}</span>
               <button
                 onClick={() => removeField(field, 'values')}
@@ -406,12 +293,7 @@ export function PivotTable({ initialData }) {
         >
           <h2 className="text-xl mb-2">Rows</h2>
           {rows.map(field => (
-            <div 
-              key={field} 
-              className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center"
-              draggable // Corrected dragable to draggable
-              onDragStart={(e) => handleDragStart(e, field)}
-            >
+            <div key={field} className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center">
               <span>{field}</span>
               <button
                 onClick={() => removeField(field, 'rows')}
@@ -430,12 +312,7 @@ export function PivotTable({ initialData }) {
         >
           <h2 className="text-xl mb-2">Columns</h2>
           {columns.map(field => (
-            <div 
-              key={field} 
-              className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center"
-              draggable
-              onDragStart={(e) => handleDragStart(e, field)}
-            >
+            <div key={field} className="bg-gray-700 p-2 mb-1 rounded flex justify-between items-center">
               <span>{field}</span>
               <button
                 onClick={() => removeField(field, 'columns')}

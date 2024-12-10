@@ -9,7 +9,7 @@ const sampleData = [
   { region: "North", product: "A", sales: 50, month: "Mar" },
 ];
 
-const App = () => {
+const Page = () => {
   return (
     <div className="p-6">
       <PivotTable data={sampleData} />
@@ -17,5 +17,5 @@ const App = () => {
   );
 };
 
-export default App;
+export default Page;
 
