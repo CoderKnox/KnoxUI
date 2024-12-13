@@ -414,15 +414,14 @@ export function PivotTable({ initialData }) {
 
   return (
     <>
+      {/* Pivot fields blocks */}
       <div className="bg-base-100 border p-1 rounded">
         {/* Fields blocks */}
         <div className="flex space-x-2 w-full overflow-auto">
           {/* Values */}
           <div className="border rounded bg-base-200 w-full">
-            <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">
-              Values
-            </h3>
-            <div className="h-48 overflow-y-auto p-2">
+            <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">Values</h3>
+            <div className="h-48 overflow-y-auto p-2" onDrop={(e) => handleDrop(e, 'values')} onDragOver={handleDragOver}>
               <div className="flex w-full pb-2 space-x-2">
                 <Radio
                   checked={aggregationType === "sum"}
@@ -464,7 +463,7 @@ export function PivotTable({ initialData }) {
             <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">
               Rows
             </h3>
-            <div className="overflow-y-auto h-48 p-2">
+            <div className="overflow-y-auto h-48 p-2" onDrop={(e) => handleDrop(e, 'rows')} onDragOver={handleDragOver}>
               {rows.map((field) => (
                 <div
                   key={field}
@@ -488,7 +487,7 @@ export function PivotTable({ initialData }) {
             <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">
               Columns
             </h3>
-            <div className="overflow-y-auto h-48 p-2">
+            <div className="overflow-y-auto h-48 p-2" onDrop={(e) => handleDrop(e, 'columns')} onDragOver={handleDragOver}>
               {columns.map((field) => (
                 <div
                   key={field}
@@ -528,7 +527,6 @@ export function PivotTable({ initialData }) {
 
       {/* ======================================= */}
       <div className="p-3 bg-base-200">
-
         {values.length > 0 && rows.length > 0 && (
           <div className="mt-8">
             <div className="flex justify-between mb-4">
