@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useTheme } from './ThemeProvider';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Github } from 'lucide-react';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -22,14 +22,12 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link href="/docs" className="hover:underline">
-                Documentation
-              </Link>
+              <a href="https://github.com/CoderKnox/knox-ui" className="hover:text-primary"><Github /></a>
             </li>
           </ul>
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors duration-200"
+            className="hover:text-primary"
           >
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
