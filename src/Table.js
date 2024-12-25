@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { ArrowDownToLine, Printer, FileCog } from 'lucide-react';
+import { useState } from "react";
+import { ArrowDownToLine, Printer } from "lucide-react";
 import { utils as XLSXUtils, writeFile } from "xlsx";
-// import "jspdf-autotable";
+import "jspdf-autotable";
 
 const sizeClasses = {
   xs: "text-xs [&>_tbody>*_td]:p-0.5 [&>_tbody>*_th]:p-0.5",
@@ -19,38 +19,17 @@ function Table({
   size = "m",
   header = true,
   title = "",
-  printSize = "A4 landscape",
-  sum = false,
-  advanceMode = false,
+  printSize="A4 landscape",
+  sum=false
 }) {
+  
   const { data, columns: initialColumns } = tableConfig;
   const [columns, setColumns] = useState(initialColumns);
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerms, setSearchTerms] = useState({});
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [globalSearch, setGlobalSearch] = useState("");
-  const [columnVisibility, setColumnVisibility] = useState(
-    columns.reduce((acc, col) => ({ ...acc, [col.key]: true }), {})
-  );
-  const [pinnedColumns, setPinnedColumns] = useState({
-    left: columns.filter((col) => col.pin === "left").map((col) => col.key),
-    right: columns.filter((col) => col.pin === "right").map((col) => col.key),
-  });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isDropdownOpen && !(event.target).closest('.relative')) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-  const baseClasses =
-    "border-collapse border w-full [&>*_th]:border [&>*_td]:border";
+  const baseClasses = "border-collapse border w-full [&>*_th]:border [&>*_td]:border";
   const sizeClass = sizeClasses[size];
   const tableClasses = baseClasses + " " + sizeClass;
 
@@ -66,13 +45,6 @@ function Table({
       const updatedColumns = [...columns];
       const [movedColumn] = updatedColumns.splice(fromIndex, 1);
       updatedColumns.splice(toIndex, 0, movedColumn);
-
-      // Update pinned columns
-      setPinnedColumns((prev) => ({
-        left: prev.left.filter((key) => key !== movedColumn.key),
-        right: prev.right.filter((key) => key !== movedColumn.key),
-      }));
-
       setColumns(updatedColumns);
     }
   };
@@ -246,12 +218,10 @@ function Table({
   const calculateSums = () => {
     const sums = {};
     columns.forEach((column) => {
-      const shouldSum = column.sum === true || (sum && column.sum !== false); // Check conditions
+      const shouldSum =
+        column.sum === true || (sum && column.sum !== false); // Check conditions
 
-      if (
-        shouldSum &&
-        (column.dataType === "int" || column.dataType === "float")
-      ) {
+      if (shouldSum && (column.dataType === 'int' || column.dataType === 'float')) {
         sums[column.key] = data.reduce((acc, row) => {
           const value = row[column.key];
           return acc + (value || 0); // Add value if it exists
@@ -270,71 +240,6 @@ function Table({
             {title && <div className="title">{title}</div>}
           </div>
           <div className="controls space-x-2 flex">
-            <div className="relative">
-              <button
-                className="h-8 w-8 rounded bg-secondary text-base-100 flex justify-center items-center"
-                title="Advance Mode"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <FileCog size={16} />
-              </button>
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                    <div className="px-4 py-2 text-sm text-gray-700">Column Visibility</div>
-                    {columns.map((column) => (
-                      <div key={column.key} className="px-4 py-2 text-sm">
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4 text-indigo-600"
-                            checked={columnVisibility[column.key]}
-                            onChange={(e) =>
-                              setColumnVisibility((prev) => ({
-                                ...prev,
-                                [col.key]: e.target.checked,
-                              }))
-                            }
-                          />
-                          <span className="ml-2">{column.header}</span>
-                        </label>
-                      </div>
-                    ))}
-                    <div className="border-t border-gray-100"></div>
-                    <div className="px-4 py-2 text-sm text-gray-700">Column Pinning</div>
-                    {columns.map((column) => (
-                      <div key={`pin-${column.key}`} className="px-4 py-2 text-sm">
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4 text-indigo-600"
-                            checked={
-                              pinnedColumns.left.includes(column.key) ||
-                              pinnedColumns.right.includes(column.key)
-                            }
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setPinnedColumns((prev) => ({
-                                  ...prev,
-                                  left: [...prev.left, column.key],
-                                }));
-                              } else {
-                                setPinnedColumns((prev) => ({
-                                  ...prev,
-                                  left: prev.left.filter((key) => key !== column.key),
-                                  right: prev.right.filter((key) => key !== column.key),
-                                }));
-                              }
-                            }}
-                          />
-                          <span className="ml-2">Pin {column.header}</span>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
             <input
               type="search"
               placeholder="Global search"
@@ -362,39 +267,22 @@ function Table({
         <thead className="*:bg-base-200">
           <tr className="*:p-0.5">
             {isSerialized && <th>#</th>}
-            {columns
-              .filter((column) => columnVisibility[column.key])
-              .sort((a, b) => {
-                if (pinnedColumns.left.includes(a.key)) return -1;
-                if (pinnedColumns.left.includes(b.key)) return 1;
-                if (pinnedColumns.right.includes(a.key)) return 1;
-                if (pinnedColumns.right.includes(b.key)) return -1;
-                return 0;
-              })
-              .map((column, index) => (
-                <th
-                  key={column.key}
-                  draggable
-                  onDragStart={handleDragStart(index)}
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop(index)}
-                  className={`cursor-move ${
-                    pinnedColumns.left.includes(column.key)
-                      ? "sticky left-0 z-10 bg-base-200"
-                      : pinnedColumns.right.includes(column.key)
-                      ? "sticky right-0 z-10 bg-base-200"
-                      : ""
-                  }`}
-                  onClick={() => handleSort(column.key, column.dataType)}
-                >
-                  {column.header}
-                  {sortConfig.key === column.key && (
-                    <span>
-                      {sortConfig.direction === "asc" ? " ↑" : " ↓"}
-                    </span>
-                  )}
-                </th>
-              ))}
+            {columns.map((column, index) => (
+              <th
+                key={column.key}
+                draggable
+                onDragStart={handleDragStart(index)}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop(index)}
+                className="cursor-move"
+                onClick={() => handleSort(column.key, column.dataType)}
+              >
+                {column.header}
+                {sortConfig.key === column.key && (
+                  <span>{sortConfig.direction === "asc" ? " ↑" : " ↓"}</span>
+                )}
+              </th>
+            ))}
           </tr>
           <tr className="table-col-search">
             {isSerialized && <th></th>}
@@ -404,9 +292,7 @@ function Table({
                   type="search"
                   placeholder={`Search ${column.header}`}
                   className="!px-1 p-0.5 w-full font-light bg-base-100"
-                  onChange={(e) =>
-                    handleSearch(column.key, e.target.value)
-                  }
+                  onChange={(e) => handleSearch(column.key, e.target.value)}
                 />
               </th>
             ))}
@@ -416,44 +302,31 @@ function Table({
           {filteredData.map((row, rowIndex) => (
             <tr key={`row-${rowIndex}`}>
               {isSerialized && <td>{rowIndex + 1}</td>}
-              {columns
-                .filter((column) => columnVisibility[column.key])
-                .sort((a, b) => {
-                  if (pinnedColumns.left.includes(a.key)) return -1;
-                  if (pinnedColumns.left.includes(b.key)) return 1;
-                  if (pinnedColumns.right.includes(a.key)) return 1;
-                  if (pinnedColumns.right.includes(b.key)) return -1;
-                  return 0;
-                })
-                .map((column, colIndex) => {
-                  const shouldRender = shouldMergeCell(rowIndex, colIndex);
-                  if (!shouldRender) return null;
+              {columns.map((column, colIndex) => {
+                const shouldRender = shouldMergeCell(rowIndex, colIndex);
+                if (!shouldRender) return null;
 
-                  const rowSpan = calculateRowSpan(rowIndex, colIndex);
-                  let tdValue = row[column.key];
+                const rowSpan = calculateRowSpan(rowIndex, colIndex);
+                let tdValue = row[column.key];
 
-                  let cellClass = "";
-                  if (["int", "float"].includes(column.dataType)) {
-                    cellClass = "text-right";
-                    if (String(tdValue).includes(".")) {
-                      tdValue = tdValue.toFixed(2);
-                    }
-                  } else if (
-                    ["date", "datetime"].includes(column.dataType)
-                  ) {
-                    cellClass = "text-center";
-                  }
+                let cellClass = "";
+                if (["int", "float"].includes(column.dataType)) {
+                  cellClass = "text-right";
+                  if(String(tdValue).includes(".")) {tdValue = tdValue.toFixed(2);};
+                } else if (["date", "datetime"].includes(column.dataType)) {
+                  cellClass = "text-center";
+                }
 
-                  return (
-                    <td
-                      key={`cell-${rowIndex}-${column.key}`}
-                      rowSpan={rowSpan}
-                      className={cellClass}
-                    >
-                      {tdValue}
-                    </td>
-                  );
-                })}
+                return (
+                  <td
+                    key={`cell-${rowIndex}-${column.key}`}
+                    rowSpan={rowSpan}
+                    className={cellClass}
+                  >
+                    {tdValue}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
@@ -463,11 +336,11 @@ function Table({
               {isSerialized && <td></td>}
               {columns.map((col) => (
                 <td key={col.key}>
-                  {sums[col.key] !== undefined
-                    ? col.dataType === "float" || sums[col.key]
-                      ? sums[col.key].toFixed(2)
-                      : sums[col.key]
-                    : ""}
+                  {sums[col.key] !== undefined ? (
+                    col.dataType === 'float' || sums[col.key] ? sums[col.key].toFixed(2) : sums[col.key]
+                  ) : (
+                    ''
+                  )}
                 </td>
               ))}
             </tr>
@@ -479,4 +352,3 @@ function Table({
 }
 
 export default Table;
-
