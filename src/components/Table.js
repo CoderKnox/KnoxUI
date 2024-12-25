@@ -22,14 +22,13 @@ function Table({
   printSize="A4 landscape",
   sum=false
 }) {
+  
   const { data, columns: initialColumns } = tableConfig;
-
   const [columns, setColumns] = useState(initialColumns);
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerms, setSearchTerms] = useState({});
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [globalSearch, setGlobalSearch] = useState("");
-
   const baseClasses = "border-collapse border w-full [&>*_th]:border [&>*_td]:border";
   const sizeClass = sizeClasses[size];
   const tableClasses = baseClasses + " " + sizeClass;
@@ -308,10 +307,12 @@ function Table({
                 if (!shouldRender) return null;
 
                 const rowSpan = calculateRowSpan(rowIndex, colIndex);
+                let tdValue = row[column.key];
 
                 let cellClass = "";
                 if (["int", "float"].includes(column.dataType)) {
                   cellClass = "text-right";
+                  if(String(tdValue).includes(".")) {tdValue = tdValue.toFixed(2);};
                 } else if (["date", "datetime"].includes(column.dataType)) {
                   cellClass = "text-center";
                 }
@@ -322,7 +323,7 @@ function Table({
                     rowSpan={rowSpan}
                     className={cellClass}
                   >
-                    {row[column.key]}
+                    {tdValue}
                   </td>
                 );
               })}
@@ -336,7 +337,7 @@ function Table({
               {columns.map((col) => (
                 <td key={col.key}>
                   {sums[col.key] !== undefined ? (
-                    col.dataType === 'float' ? sums[col.key].toFixed(2) : sums[col.key]
+                    col.dataType === 'float' || sums[col.key] ? sums[col.key].toFixed(2) : sums[col.key]
                   ) : (
                     ''
                   )}
