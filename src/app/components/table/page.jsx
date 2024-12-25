@@ -8,9 +8,9 @@ const tableConfig = {
     { key: 'styleName', header: 'Style Name' },
     { key: 'orderNumber', header: 'Order Number' },
     { key: 'color', header: 'Color', dataType: 'str' },
-    { key: 'orderQuantity', header: 'Order Quantity', dataType: 'int' },
-    { key: 'price', header: 'Price/pcs', dataType: 'float' },
-    { key: 'orderDate', header: 'Order Date', dataType: 'date' },
+    { key: 'orderQuantity', header: 'Order Quantity', dataType: 'int', sum: true },
+    { key: 'price', header: 'Price/pcs', dataType: 'float'},
+    { key: 'orderDate', header: 'Order Date', dataType: 'date'},
     { key: 'entryDate', header: 'Entry Date', dataType: 'datetime' },
   ],
   data: [
@@ -77,6 +77,7 @@ export default function Page() {
         size='m'
         header={true}
         title='My Table Title'
+        // sum={true}
       />
     </div>
   );

@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react";
-import { ArrowDownToLine, Printer } from 'lucide-react';
+import { useState } from "react";
+import { ArrowDownToLine, Printer } from "lucide-react";
 import { utils as XLSXUtils, writeFile } from "xlsx";
 import "jspdf-autotable";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 const sizeClasses = {
-  xs: 'text-xs [&>_tbody>*_td]:p-0.5 [&>_tbody>*_th]:p-0.5',
-  s:  'text-sm [&>_tbody>*_td]:p-1   [&>_tbody>*_th]:p-1 ',
-  m:  'text-base [&>_tbody>*_td]:p-1.5 [&>_tbody>*_th]:p-1.5',
-  l:  'text-lg [&>_tbody>*_td]:p-2   [&>_tbody>*_th]:p-2 ',
-  xl: 'text-xl [&>_tbody>*_td]:p-2.5 [&>_tbody>*_th]:p-2.5',
+  xs: "text-xs [&>_tbody>*_td]:p-0.5 [&>_tbody>*_th]:p-0.5",
+  s: "text-sm [&>_tbody>*_td]:p-1   [&>_tbody>*_th]:p-1 ",
+  m: "text-base [&>_tbody>*_td]:p-1.5 [&>_tbody>*_th]:p-1.5",
+  l: "text-lg [&>_tbody>*_td]:p-2   [&>_tbody>*_th]:p-2 ",
+  xl: "text-xl [&>_tbody>*_td]:p-2.5 [&>_tbody>*_th]:p-2.5",
 };
 
-function Table({ tableConfig = { data: [], columns: [] }, 
-  isSerialized = true, 
-  size='m',
-  header=true,
-  title='', 
+function Table({
+  tableConfig = { data: [], columns: [] },
+  isSerialized = true,
+  size = "m",
+  header = true,
+  title = "",
+  printSize="A4 landscape",
+  sum=false
 }) {
   const { data, columns: initialColumns } = tableConfig;
 
@@ -27,7 +28,7 @@ function Table({ tableConfig = { data: [], columns: [] },
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerms, setSearchTerms] = useState({});
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
-  const [globalSearch, setGlobalSearch] = useState('');
+  const [globalSearch, setGlobalSearch] = useState("");
 
   const baseClasses = "border-collapse border w-full [&>*_th]:border [&>*_td]:border";
   const sizeClass = sizeClasses[size];
@@ -64,17 +65,21 @@ function Table({ tableConfig = { data: [], columns: [] },
   };
 
   const filterData = (globalTerm, columnTerms) => {
-    const filtered = data.filter((row) =>
-      columns.some((col) => 
-        row[col.key]?.toString().toLowerCase().includes(globalTerm.toLowerCase())
-      ) &&
-      columns.every((col) => {
-        if (!columnTerms[col.key]) return true;
-        return row[col.key]
-          ?.toString()
-          .toLowerCase()
-          .includes(columnTerms[col.key].toLowerCase());
-      })
+    const filtered = data.filter(
+      (row) =>
+        columns.some((col) =>
+          row[col.key]
+            ?.toString()
+            .toLowerCase()
+            .includes(globalTerm.toLowerCase())
+        ) &&
+        columns.every((col) => {
+          if (!columnTerms[col.key]) return true;
+          return row[col.key]
+            ?.toString()
+            .toLowerCase()
+            .includes(columnTerms[col.key].toLowerCase());
+        })
     );
     setFilteredData(filtered);
   };
@@ -117,7 +122,10 @@ function Table({ tableConfig = { data: [], columns: [] },
     // Check if any previous column is not merged
     for (let i = 0; i < colIndex; i++) {
       const prevColKey = columns[i].key;
-      if (filteredData[rowIndex][prevColKey] !== filteredData[rowIndex - 1][prevColKey]) {
+      if (
+        filteredData[rowIndex][prevColKey] !==
+        filteredData[rowIndex - 1][prevColKey]
+      ) {
         return true; // Don't merge with previous row if any previous column is not merged
       }
     }
@@ -136,7 +144,9 @@ function Table({ tableConfig = { data: [], columns: [] },
       // Check all previous columns
       for (let j = 0; j < colIndex; j++) {
         const prevColKey = columns[j].key;
-        if (filteredData[i][prevColKey] !== filteredData[rowIndex][prevColKey]) {
+        if (
+          filteredData[i][prevColKey] !== filteredData[rowIndex][prevColKey]
+        ) {
           canMerge = false;
           break;
         }
@@ -164,16 +174,64 @@ function Table({ tableConfig = { data: [], columns: [] },
   };
 
   const exportToPDF = () => {
-    const printWindow = window.open('', '');
-    printWindow.document.write('<html><head><title>Table Export to PDF</title>');
-    printWindow.document.write('</head><body >');
+    // Open a new window for printing
+    const printWindow = window.open("", "");
+
+    // Get the table HTML and exclude rows with 'table-col-search' class
+    const table = document.querySelector("table").cloneNode(true); // Clone table to avoid modifying the original
+    const searchRow = table.querySelector(".table-col-search");
+    if (searchRow) searchRow.remove(); // Remove 'table-col-search' row
+
+    // Fetch computed styles of the table and its children
+    const styles = Array.from(document.styleSheets)
+      .map((styleSheet) => {
+        try {
+          return Array.from(styleSheet.cssRules || [])
+            .map((rule) => rule.cssText)
+            .join("\n");
+        } catch (error) {
+          console.warn("Could not access stylesheet", styleSheet, error);
+          return "";
+        }
+      })
+      .join("\n");
+
+    // Write the HTML and styles into the new window
+    printWindow.document.write(
+      "<html><head><title>Table Export to PDF</title>"
+    );
+    printWindow.document.write("<style>");
+    printWindow.document.write(styles); // Inject styles
+    printWindow.document.write(`
+        @page { size: ${printSize}; }
+        body { font-family: Arial, sans-serif; }
+    `);
+    printWindow.document.write("</style></head><body style='padding: 8px;'>");
     printWindow.document.write(`<h1>${title}</h1>`);
-    printWindow.document.write(document.querySelector('table').outerHTML);
-    printWindow.document.write('</body></html>');
+    printWindow.document.write(table.outerHTML);
+    printWindow.document.write("</body></html>");
     printWindow.document.close();
+    // Focus and print
+    printWindow.focus();
     printWindow.print();
-    // printWindow.close();
   };
+
+  const calculateSums = () => {
+    const sums = {};
+    columns.forEach((column) => {
+      const shouldSum =
+        column.sum === true || (sum && column.sum !== false); // Check conditions
+
+      if (shouldSum && (column.dataType === 'int' || column.dataType === 'float')) {
+        sums[column.key] = data.reduce((acc, row) => {
+          const value = row[column.key];
+          return acc + (value || 0); // Add value if it exists
+        }, 0);
+      }
+    });
+    return sums;
+  };
+  const sums = calculateSums();
 
   return (
     <div className="bg-base-100">
@@ -183,14 +241,26 @@ function Table({ tableConfig = { data: [], columns: [] },
             {title && <div className="title">{title}</div>}
           </div>
           <div className="controls space-x-2 flex">
-            <input 
-              type="search" 
-              placeholder="Global search" 
+            <input
+              type="search"
+              placeholder="Global search"
               className="border rounded text-sm px-1.5 border-secondary outline-none focus:border-primary bg-base-100"
               onChange={(e) => handleGlobalSearch(e.target.value)}
             />
-            <button onClick={exportToExcel} title="Export to Excel" className="h-8 w-8 rounded bg-success flex justify-center items-center"><ArrowDownToLine size={16} /></button>
-            <button onClick={exportToPDF} title="Save as PDF" className="h-8 w-8 rounded bg-primary flex justify-center items-center"><Printer size={16} /></button>
+            <button
+              onClick={exportToExcel}
+              title="Export to Excel"
+              className="h-8 w-8 rounded bg-success flex justify-center items-center"
+            >
+              <ArrowDownToLine size={16} />
+            </button>
+            <button
+              onClick={exportToPDF}
+              title="Print or Save as PDF"
+              className="h-8 w-8 rounded bg-primary flex justify-center items-center"
+            >
+              <Printer size={16} />
+            </button>
           </div>
         </div>
       )}
@@ -215,7 +285,7 @@ function Table({ tableConfig = { data: [], columns: [] },
               </th>
             ))}
           </tr>
-          <tr>
+          <tr className="table-col-search">
             {isSerialized && <th></th>}
             {columns.map((column) => (
               <th key={`search-${column.key}`} className="!p-0.5">
@@ -238,7 +308,7 @@ function Table({ tableConfig = { data: [], columns: [] },
                 if (!shouldRender) return null;
 
                 const rowSpan = calculateRowSpan(rowIndex, colIndex);
-                
+
                 let cellClass = "";
                 if (["int", "float"].includes(column.dataType)) {
                   cellClass = "text-right";
@@ -259,6 +329,22 @@ function Table({ tableConfig = { data: [], columns: [] },
             </tr>
           ))}
         </tbody>
+        {Object.keys(sums).length > 0 && (
+          <tfoot>
+            <tr className="*:bg-base-200 text-right font-bold">
+              {isSerialized && <td></td>}
+              {columns.map((col) => (
+                <td key={col.key}>
+                  {sums[col.key] !== undefined ? (
+                    col.dataType === 'float' ? sums[col.key].toFixed(2) : sums[col.key]
+                  ) : (
+                    ''
+                  )}
+                </td>
+              ))}
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );

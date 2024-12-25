@@ -1,284 +1,96 @@
 <html>
-  <head>
-    <title>Untitled-1</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <h1>Table</h1>
-    <div class="overflow-x-auto">
-      <table
-        class="min-w-full bg-gray-800 text-white [&amp;>*_th]:border [&amp;>*_td]:border [&amp;>*_td]:p-1"
-      >
-        <thead>
-          <tr>
-            <th rowspan="2">buyer</th>
-            <th rowspan="2">style</th>
-            <th rowspan="2">orderNumber</th>
-            <th
-              colspan="5"
-              draggable="true"
-              class="cursor-move hover:bg-gray-700"
-            >
-              orderQty
-            </th>
-            <th
-              colspan="5"
-              draggable="true"
-              class="cursor-move hover:bg-gray-700"
-            >
-              pricePerPcs
-            </th>
-          </tr>
-          <tr>
-            <th>Red</th>
-            <th>Blue</th>
-            <th>White</th>
-            <th>Black</th>
-            <th>Green</th>
-            <th>Red</th>
-            <th>Blue</th>
-            <th>White</th>
-            <th>Black</th>
-            <th>Green</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td rowspan="6">H&amp;M</td>
-            <td rowspan="3">ABC</td>
-            <td>OD007</td>
-            <td>1500</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>180</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td rowspan="1">OD010</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1300</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>190</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
-          <tr class="bg-gray-600">
-            <th>SUM</th>
-            <th>1500</th>
-            <th>0</th>
-            <th>1300</th>
-            <th>0</th>
-            <th>0</th>
-            <th>180</th>
-            <th>0</th>
-            <th>190</th>
-            <th>0</th>
-            <th>0</th>
-          </tr>
-          <tr>
-            <td rowspan="2">SDF</td>
-            <td rowspan="1">OD004</td>
-            <td>0</td>
-            <td>0</td>
-            <td>800</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>400</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td rowspan="1">OD013</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>850</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>410</td>
-          </tr>
-          <tr class="bg-gray-600">
-            <th colspan="2">SUM</th>
-            <th>1500</th>
-            <th>0</th>
-            <th>2100</th>
-            <th>0</th>
-            <th>850</th>
-            <th>180</th>
-            <th>0</th>
-            <th>590</th>
-            <th>0</th>
-            <th>410</th>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </body>
-</html>
+    <body>
+        <table>
+            <thead>
+                <tr class="bg-gray-200">
+                    <th>#</th>
+                    <th>Buyer</th>
+                    <th>Style</th>
+                    <th>Color</th>
+                    <th>QTY</th>
+                </tr>
+                <tr class="table-col-search">
+                    <th></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="bg-gray-200">1</th>
+                    <td>Zara</td>
+                    <td>XYZ</td>
+                    <td>Red</td>
+                    <td>500</td>
+                </tr>
+                <tr>
+                    <th class="bg-gray-200">2</th>
+                    <td>Zara</td>
+                    <td>ABC</td>
+                    <td>White</td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <th class="bg-gray-200">3</th>
+                    <td>H&M</td>
+                    <td>KDF</td>
+                    <td>Red</td>
+                    <td class="bg-red-200">50000</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <style>
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+        </style>
 
-<div class="hidden">
-  <tr>
-    <td rowspan="4">Lindex</td>
-    <td rowspan="2">PQR</td>
-    <td rowspan="1">OD011</td>
-    <td>1100</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>380</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD014</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1050</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>390</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="2">XXY</td>
-    <td rowspan="1">OD005</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>800</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>400</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD008</td>
-    <td>0</td>
-    <td>900</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>420</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="7">Zara</td>
-    <td rowspan="2">MNO</td>
-    <td rowspan="1">OD012</td>
-    <td>0</td>
-    <td>950</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>250</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD015</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1100</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>260</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="2">SDF</td>
-    <td rowspan="1">OD003</td>
-    <td>0</td>
-    <td>0</td>
-    <td>800</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>300</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD009</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>700</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>310</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="3">XYZ</td>
-    <td rowspan="1">OD001</td>
-    <td>1000</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>200</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD002</td>
-    <td>0</td>
-    <td>1000</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>200</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td rowspan="1">OD006</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1200</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>220</td>
-  </tr>
-</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Buyer</th>
+                    <th>Style</th>
+                    <th>Color</th>
+                    <th>QTY</th>
+                </tr>
+                <tr class="table-col-search">
+                    <th></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                    <th><input type="text"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="bg-gray-200">1</th>
+                    <td>Zara</td>
+                    <td>XYZ</td>
+                    <td>Red</td>
+                    <td>500</td>
+                </tr>
+                <tr>
+                    <th class="bg-gray-200">2</th>
+                    <td>Zara</td>
+                    <td>ABC</td>
+                    <td>White</td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <th class="bg-gray-200">3</th>
+                    <td>H&M</td>
+                    <td>KDF</td>
+                    <td>Red</td>
+                    <td class="bg-red-200">50000</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </body>
+</html>
