@@ -12,15 +12,79 @@ export default function PivotTableDocs() {
     { buyer: 'Lindex', style: 'XXY', orderNumber: 'OD005', color: 'Black', orderQty: 800, pricePerPcs: 400 },
     { buyer: 'Zara', style: 'XYZ', orderNumber: 'OD006', color: 'Green', orderQty: 1200, pricePerPcs: 220 },
     { buyer: 'H&M', style: 'ABC', orderNumber: 'OD007', color: 'Red', orderQty: 1500, pricePerPcs: 180 },
-    { buyer: 'Lindex', style: 'XXY', orderNumber: 'OD008', color: 'Blue', orderQty: 900, pricePerPcs: 420 },
+    { buyer: 'Lindex', style: 'XXY', orderNumber: 'OD008', color: 'Blue', orderQty: 900, pricePerPcs: 420.00 },
     { buyer: 'Zara', style: 'SDF', orderNumber: 'OD009', color: 'Black', orderQty: 700, pricePerPcs: 310 },
     { buyer: 'H&M', style: 'ABC', orderNumber: 'OD010', color: 'White', orderQty: 1300, pricePerPcs: 190 },
     { buyer: 'Lindex', style: 'PQR', orderNumber: 'OD011', color: 'Red', orderQty: 1100, pricePerPcs: 380 },
-    { buyer: 'Zara', style: 'MNO', orderNumber: 'OD012', color: 'Blue', orderQty: 950, pricePerPcs: 250 },
-    { buyer: 'H&M', style: 'SDF', orderNumber: 'OD013', color: 'Green', orderQty: 850, pricePerPcs: 410 },
-    { buyer: 'Lindex', style: 'PQR', orderNumber: 'OD014', color: 'White', orderQty: 1050, pricePerPcs: 390 },
-    { buyer: 'Zara', style: 'MNO', orderNumber: 'OD015', color: 'Black', orderQty: 1100, pricePerPcs: 260 },
+    { buyer: 'Zara', style: 'MNO', orderNumber: 'OD012', color: 'Blue', orderQty: 950, pricePerPcs: 250.225 },
+    { buyer: 'H&M', style: 'SDF', orderNumber: 'OD013', color: 'Green', orderQty: 850, pricePerPcs: 410.2 },
+    { buyer: 'Lindex', style: 'PQR', orderNumber: 'OD014', color: 'White', orderQty: 1050, pricePerPcs: 390.025 },
+    { buyer: 'Zara', style: 'MNO', orderNumber: 'OD015', color: 'Black', orderQty: 1100, pricePerPcs: 260.0003 },
   ]
+
+  function getTotal(row) {
+    const qty = row.orderQty;
+    const price = row.pricePerPcs;
+    const total = qty * price;
+    const cell = row.cell;
+    if (total > 240000) {
+      cell.sx = {backgroundColor:'red'}
+    }
+  }
+
+  const tableConfig = {
+    data: initialData,
+    columns: [
+      { 
+        key: 'sr', 
+        isRowCounter: true, 
+        pinned: 'left', 
+        isSearchable: false 
+      },
+      { 
+        key: 'buyer', 
+        header: 'Buyer Name', 
+        dataType: 'string', 
+        style: { backgroundColor: 'red' } 
+      },
+      { 
+        key: 'style', 
+        header: 'Style Name', 
+        dataType: 'string', 
+        className: 'font-bold !p-0' 
+      },
+      { 
+        key: 'orderNumber', 
+        header: 'Order Number', 
+        className: 'font-bold', 
+        isSortable: false 
+      },
+      { 
+        key: 'color', 
+        header: 'Color Name', 
+        className: 'text-center' 
+      },
+      { 
+        key: 'orderQty', 
+        header: 'Order Quantity', 
+        dataType: 'integer', 
+        isSummable: true 
+      },
+      { 
+        key: 'pricePerPcs', 
+        header: 'Price/pcs', 
+        dataType: 'float', 
+        isSummable: true,
+      },
+      { 
+        header: 'Total', 
+        dataType: 'float', 
+        shouldRound: false, 
+        isSummable: true, 
+        customRender: getTotal
+      },
+    ]
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -59,7 +123,7 @@ export default function PivotTableDocs() {
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Example</h2>
-        <PivotTable initialData={initialData} />
+        <PivotTable initialData={tableConfig} />
       </section>
 
       <section className="mb-12">

@@ -1,158 +1,267 @@
-'use client';
+"use client"
 
-import React from 'react'
-import Input from './Input'
-import Button from './Button'
+import { useState, useRef } from "react";
+import { ArrowDownToLine, Printer } from 'lucide-react';
+import { utils as XLSXUtils, writeFile } from "xlsx";
+import "jspdf-autotable";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-function Table(column, data, sorting=true, search=true, exportPDF=true, exportExcel=true, title='',) {
+const sizeClasses = {
+  xs: 'text-xs [&>_tbody>*_td]:p-0.5 [&>_tbody>*_th]:p-0.5',
+  s:  'text-sm [&>_tbody>*_td]:p-1   [&>_tbody>*_th]:p-1 ',
+  m:  'text-base [&>_tbody>*_td]:p-1.5 [&>_tbody>*_th]:p-1.5',
+  l:  'text-lg [&>_tbody>*_td]:p-2   [&>_tbody>*_th]:p-2 ',
+  xl: 'text-xl [&>_tbody>*_td]:p-2.5 [&>_tbody>*_th]:p-2.5',
+};
+
+function Table({ tableConfig = { data: [], columns: [] }, 
+  isSerialized = true, 
+  size='m',
+  header=true,
+  title='', 
+}) {
+  const { data, columns: initialColumns } = tableConfig;
+
+  const [columns, setColumns] = useState(initialColumns);
+  const [filteredData, setFilteredData] = useState(data);
+  const [searchTerms, setSearchTerms] = useState({});
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [globalSearch, setGlobalSearch] = useState('');
+
+  const baseClasses = "border-collapse border w-full [&>*_th]:border [&>*_td]:border";
+  const sizeClass = sizeClasses[size];
+  const tableClasses = baseClasses + " " + sizeClass;
+
+  const handleDragStart = (index) => (event) => {
+    event.dataTransfer.setData("columnIndex", index.toString());
+  };
+
+  const handleDrop = (index) => (event) => {
+    const fromIndex = Number(event.dataTransfer.getData("columnIndex"));
+    const toIndex = index;
+
+    if (fromIndex !== toIndex) {
+      const updatedColumns = [...columns];
+      const [movedColumn] = updatedColumns.splice(fromIndex, 1);
+      updatedColumns.splice(toIndex, 0, movedColumn);
+      setColumns(updatedColumns);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleSearch = (key, value) => {
+    setSearchTerms((prev) => ({ ...prev, [key]: value }));
+    filterData(globalSearch, { ...searchTerms, [key]: value });
+  };
+
+  const handleGlobalSearch = (value) => {
+    setGlobalSearch(value);
+    filterData(value, searchTerms);
+  };
+
+  const filterData = (globalTerm, columnTerms) => {
+    const filtered = data.filter((row) =>
+      columns.some((col) => 
+        row[col.key]?.toString().toLowerCase().includes(globalTerm.toLowerCase())
+      ) &&
+      columns.every((col) => {
+        if (!columnTerms[col.key]) return true;
+        return row[col.key]
+          ?.toString()
+          .toLowerCase()
+          .includes(columnTerms[col.key].toLowerCase());
+      })
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleSort = (key, dataType) => {
+    const newDirection =
+      sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      let valA = a[key];
+      let valB = b[key];
+
+      if (dataType === "int" || dataType === "float") {
+        valA = parseFloat(valA) || 0;
+        valB = parseFloat(valB) || 0;
+      } else if (dataType === "date" || dataType === "datetime") {
+        valA = new Date(valA) || 0;
+        valB = new Date(valB) || 0;
+      } else {
+        valA = valA?.toString().toLowerCase() || "";
+        valB = valB?.toString().toLowerCase() || "";
+      }
+
+      if (valA < valB) return newDirection === "asc" ? -1 : 1;
+      if (valA > valB) return newDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredData(sortedData);
+    setSortConfig({ key, direction: newDirection });
+  };
+
+  const shouldMergeCell = (rowIndex, colIndex) => {
+    if (rowIndex === 0) return true;
+
+    const currentColumn = columns[colIndex];
+    const currentValue = filteredData[rowIndex][currentColumn.key];
+    const previousValue = filteredData[rowIndex - 1][currentColumn.key];
+
+    // Check if any previous column is not merged
+    for (let i = 0; i < colIndex; i++) {
+      const prevColKey = columns[i].key;
+      if (filteredData[rowIndex][prevColKey] !== filteredData[rowIndex - 1][prevColKey]) {
+        return true; // Don't merge with previous row if any previous column is not merged
+      }
+    }
+
+    return currentValue !== previousValue;
+  };
+
+  const calculateRowSpan = (rowIndex, colIndex) => {
+    const currentColumn = columns[colIndex];
+    const currentValue = filteredData[rowIndex][currentColumn.key];
+    let rowSpan = 1;
+
+    // Only calculate rowspan if all previous columns are merged
+    let canMerge = true;
+    for (let i = rowIndex + 1; i < filteredData.length; i++) {
+      // Check all previous columns
+      for (let j = 0; j < colIndex; j++) {
+        const prevColKey = columns[j].key;
+        if (filteredData[i][prevColKey] !== filteredData[rowIndex][prevColKey]) {
+          canMerge = false;
+          break;
+        }
+      }
+
+      if (!canMerge || filteredData[i][currentColumn.key] !== currentValue) {
+        break;
+      }
+      rowSpan++;
+    }
+
+    return rowSpan;
+  };
+
+  const exportToExcel = () => {
+    const headers = columns.map((col) => col.header);
+    const rows = filteredData.map((row) =>
+      columns.map((col) => row[col.key] || "")
+    );
+
+    const worksheet = XLSXUtils.aoa_to_sheet([headers, ...rows]);
+    const workbook = XLSXUtils.book_new();
+    XLSXUtils.book_append_sheet(workbook, worksheet, "Table Data");
+    writeFile(workbook, `${title}.xlsx`);
+  };
+
+  const exportToPDF = () => {
+    const printWindow = window.open('', '');
+    printWindow.document.write('<html><head><title>Table Export to PDF</title>');
+    printWindow.document.write('</head><body >');
+    printWindow.document.write(`<h1>${title}</h1>`);
+    printWindow.document.write(document.querySelector('table').outerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+    // printWindow.close();
+  };
+
   return (
-    <div className="flex w-full">
-      <div className='space-y-2 pr-2'>
-        <div className="card border bg-base-100">
-          <h2 className="card-title font-bold bg-base-300 text-center">VALUES</h2>
-          <div className="card-body p-2">
-            <ul className='*:bg-base-200 space-y-1 *:px-2 *:py-1'>
-              <li>Order Qty.</li>
-              <li>Price/pcs</li>
-            </ul>
-            <div className='space-x-2 pt-2'>
-              <label className='bg-base-200 p-1'>
-                <input checked name='knox-table-sum' type="radio" />SUM
-              </label>
-              <label className='bg-base-200 p-1'>
-                <input type="radio" name='knox-table-sum' />COUNT
-              </label>
-            </div>
+    <div className="bg-base-100">
+      {header && (
+        <div className="table-header p-2 flex justify-between border border-b-0 bg-base-200 rounded-t">
+          <div className="font-semibold text-lg">
+            {title && <div className="title">{title}</div>}
+          </div>
+          <div className="controls space-x-2 flex">
+            <input 
+              type="search" 
+              placeholder="Global search" 
+              className="border rounded text-sm px-1.5 border-secondary outline-none focus:border-primary bg-base-100"
+              onChange={(e) => handleGlobalSearch(e.target.value)}
+            />
+            <button onClick={exportToExcel} title="Export to Excel" className="h-8 w-8 rounded bg-success flex justify-center items-center"><ArrowDownToLine size={16} /></button>
+            <button onClick={exportToPDF} title="Save as PDF" className="h-8 w-8 rounded bg-primary flex justify-center items-center"><Printer size={16} /></button>
           </div>
         </div>
-        <div className="card border bg-base-100">
-          <h2 className="card-title font-bold bg-base-300 text-center">ROWS</h2>
-          <div className="card-body p-2">
-            <ul className='*:bg-base-200 space-y-1 *:px-2 *:py-1'>
-              <li>Buyer</li>
-              <li>Style</li>
-              <li>Order Number</li>
-              <li>Color</li>
-            </ul>
-          </div>
-        </div>
-        <div className="card border bg-base-100">
-          <h2 className="card-title font-bold bg-base-300 text-center">COLUMN</h2>
-          <div className="card-body p-2">
-            <ul className='*:bg-base-200 space-y-1 *:px-2 *:py-1'></ul>
-          </div>
-        </div>
-      </div>
-      <div className='tableWrapper flex-1'>
-        <div className='border mb-2'>
-          <h2 className='bg-base-300 p-2 font-bold'>Pivot Table Fields (Drag and drop in column, row or values)</h2>
-          <ul className='flex space-x-1 *:bg-base-200 *:px-2 *:py-1 *:rounded p-2'>
-            <li>Buyer</li>
-            <li>Style</li>
-            <li>Order Number</li>
-            <li>Color</li>
-            <li>Order Qty.</li>
-            <li>Price/pcs</li>
-            <li>Remarks</li>
-            <li>Others</li>
-          </ul>
-        </div>
-        <div className='p-2 border'>
-          <div className="flex justify-between items-center">
-            <div className="title font-bold text-lg">Pivot Table</div>
-            <div className='flex'>
-              <Input placeholder='Search in table' />
-              <Button onClick={() => {}}>Export To PDF</Button>
-              <Button onClick={() => {}}>Export To Excel</Button>
-            </div>
-          </div>
-        </div>
-        <table className='w-full border-collapse [&>*_th]:border [&>*_td]:border [&>*_td]:p-1'>
-          <thead>
-            <tr className='bg-base-200'>
-              <th>#</th>
-              <th>Buyer</th>
-              <th>Style</th>
-              <th>Order Number</th>
-              <th>Color</th>
-              <th>Order Qty.</th>
-              <th>Price/pcs</th>
-            </tr>
-          </thead>
-          
-          <tbody>
-            <tr>
-              <th>1</th>
-              <td rowSpan={4}>Zara</td>
-              <td rowSpan={2}>XYZ</td>
-              <td>OD001</td>
-              <td>Red</td>
-              <td className='text-end'>1000</td>
-              <td className='text-end'>200</td>
-            </tr>
-            <tr>
-              <th>2</th>
-              <td>OD002</td>
-              <td>Blue</td>
-              <td className='text-end'>1000</td>
-              <td className='text-end'>200</td>
-            </tr>
-            <tr>
-              <th>+</th>
-              <th colSpan={4} className='text-end bg-black/20'>2000</th>
-              <th className='text-end bg-black/20'>400</th>
-            </tr>
-            <tr>
-              <th>3</th>
-              <td>SDF</td>
-              <td>OD003</td>
-              <td>White</td>
-              <td className='text-end'>800</td>
-              <td className='text-end'>300</td>
-            </tr>
-            <tr>
-              <th>+</th>
-              <th colSpan={5} className='text-end bg-black/20'>2800</th>
-              <th className='text-end bg-black/20'>700</th>
-            </tr>
-            <tr>
-              <th>4</th>
-              <td>H&M</td>
-              <td>SDF</td>
-              <td>OD004</td>
-              <td>White</td>
-              <td className='text-end'>800</td>
-              <td className='text-end'>400</td>
-            </tr>
-            <tr>
-              <th>5</th>
-              <td>Lindex</td>
-              <td>XXY</td>
-              <td>OD005</td>
-              <td>Black</td>
-              <td className='text-end'>800</td>
-              <td className='text-end'>400</td>
-            </tr>
-          </tbody>
+      )}
+      <table className={tableClasses}>
+        <thead className="*:bg-base-200">
+          <tr className="*:p-0.5">
+            {isSerialized && <th>#</th>}
+            {columns.map((column, index) => (
+              <th
+                key={column.key}
+                draggable
+                onDragStart={handleDragStart(index)}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop(index)}
+                className="cursor-move"
+                onClick={() => handleSort(column.key, column.dataType)}
+              >
+                {column.header}
+                {sortConfig.key === column.key && (
+                  <span>{sortConfig.direction === "asc" ? " ↑" : " ↓"}</span>
+                )}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            {isSerialized && <th></th>}
+            {columns.map((column) => (
+              <th key={`search-${column.key}`} className="!p-0.5">
+                <input
+                  type="search"
+                  placeholder={`Search ${column.header}`}
+                  className="!px-1 p-0.5 w-full font-light bg-base-100"
+                  onChange={(e) => handleSearch(column.key, e.target.value)}
+                />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((row, rowIndex) => (
+            <tr key={`row-${rowIndex}`}>
+              {isSerialized && <td>{rowIndex + 1}</td>}
+              {columns.map((column, colIndex) => {
+                const shouldRender = shouldMergeCell(rowIndex, colIndex);
+                if (!shouldRender) return null;
 
-          <tfoot>
-            <tr className='bg-base-200'>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th>4400</th>
-              <th>1500</th>
+                const rowSpan = calculateRowSpan(rowIndex, colIndex);
+                
+                let cellClass = "";
+                if (["int", "float"].includes(column.dataType)) {
+                  cellClass = "text-right";
+                } else if (["date", "datetime"].includes(column.dataType)) {
+                  cellClass = "text-center";
+                }
+
+                return (
+                  <td
+                    key={`cell-${rowIndex}-${column.key}`}
+                    rowSpan={rowSpan}
+                    className={cellClass}
+                  >
+                    {row[column.key]}
+                  </td>
+                );
+              })}
             </tr>
-          </tfoot>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
-  )
+  );
 }
 
-export default Table
-
-
-
+export default Table;

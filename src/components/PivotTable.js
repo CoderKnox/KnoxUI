@@ -3,6 +3,8 @@
 import React from "react";
 import Button from "./Button";
 import Radio from "./Radio";
+import Input from "./Input";
+import { FileDown } from "lucide-react";
 
 export function PivotTable({ initialData }) {
   const sortData = (data, fields) => {
@@ -413,9 +415,9 @@ export function PivotTable({ initialData }) {
   };
 
   return (
-    <>
+    <div className="space-y-2">
       {/* Pivot fields blocks */}
-      <div className="bg-base-100 border p-1 rounded">
+      <div className="bg-base-100 rounded">
         {/* Fields blocks */}
         <div className="flex space-x-2 w-full overflow-auto">
           {/* Values */}
@@ -443,7 +445,7 @@ export function PivotTable({ initialData }) {
                   <div
                     key={field}
                     draggable
-                    className="bg-base-100 border p-2 mb-1 rounded flex justify-between items-center"
+                    className="bg-base-100 border p-2 mb-1 rounded flex justify-between items-center cursor-move hover:shadow-lg duration-200"
                     onDragStart={(e) => handleDragStart(e, field)}
                   >
                     <span>{field}</span>
@@ -460,24 +462,17 @@ export function PivotTable({ initialData }) {
           </div>
           {/* Rows */}
           <div className="border rounded bg-base-200 w-full">
-            <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">
-              Rows
-            </h3>
+            <h3 className="font-semibold p-1 text-center w-full bg-base-300 border-b">Rows</h3>
             <div className="overflow-y-auto h-48 p-2" onDrop={(e) => handleDrop(e, 'rows')} onDragOver={handleDragOver}>
               {rows.map((field) => (
                 <div
                   key={field}
-                  className="bg-base-100 shadow p-2 mb-1 rounded flex justify-between items-center"
+                  className="bg-base-100 border p-2 mb-1 rounded flex justify-between items-center cursor-move hover:shadow-lg duration-200"
                   draggable // Corrected dragable to draggable
                   onDragStart={(e) => handleDragStart(e, field)}
                 >
                   <span>{field}</span>
-                  <button
-                    onClick={() => removeField(field, "rows")}
-                    className="text-error hover:text-warning"
-                  >
-                    ×
-                  </button>
+                  <button onClick={() => removeField(field, "rows")} className="text-error hover:text-warning">×</button>
                 </div>
               ))}
             </div>
@@ -491,7 +486,7 @@ export function PivotTable({ initialData }) {
               {columns.map((field) => (
                 <div
                   key={field}
-                  className="bg-base-100 shadow p-2 mb-1 rounded flex justify-between items-center"
+                  className="bg-base-100 shadow cursor-move p-2 mb-1 rounded flex justify-between items-center hover:shadow-lg duration-200"
                   draggable
                   onDragStart={(e) => handleDragStart(e, field)}
                 >
@@ -526,9 +521,23 @@ export function PivotTable({ initialData }) {
       </div>
 
       {/* ======================================= */}
-      <div className="p-3 bg-base-200">
+      <div className="border rounded bg-base-200">
+        {/* Table header bar */}
+        <div className="p-2 flex justify-between items-center">
+            <h2 className="font-semibold text-lg">Pivot Table Title</h2>
+            <div className="flex join space-x- *:!rounded-none">
+              {/* Global Search */}
+              <Input color='secondary' placeholder="Global Search" title='Real time search in table' className={'rounded-none'}/>
+              {/* Export buttons */}
+              <Button title='Export to excel' color="success" className="py-2.5"><FileDown size='16' /></Button>
+              <Button title='Export to PDF' color="error" className="py-2.5"><FileDown size='16' /></Button>
+            </div>
+        </div>
+
         {values.length > 0 && rows.length > 0 && (
-          <div className="mt-8">
+
+
+          <div className="p-2">
             <div className="flex justify-between mb-4">
               <input
                 type="text"
@@ -548,6 +557,6 @@ export function PivotTable({ initialData }) {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
