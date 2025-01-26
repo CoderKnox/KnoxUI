@@ -5,34 +5,42 @@
   },
   {
     "name": "Button",
-    "link": "/components/button"
+    "link": "/doc/button"
   },
   {
     "name": "Input",
-    "link": "/components/input"
+    "link": "/doc/input"
   },
   {
     "name": "Text Area",
-    "link": "/components/textarea"
+    "link": "/doc/textarea"
   },
   {
     "name": "Checkbox",
-    "link": "/components/checkbox"
+    "link": "/doc/checkbox"
   },
   {
     "name": "Radio",
-    "link": "/components/radio"
+    "link": "/doc/radio"
   },
   {
     "name": "Select",
-    "link": "/components/select"
+    "link": "/doc/select"
+  },
+  {
+    "name": "Tab",
+    "link": "/doc/tab-bar"
   },
   {
     "name": "Pivot Table",
-    "link": "/components/pivot-table"
+    "link": "/doc/pivot-table"
   },
   {
     "name": "Table",
-    "link": "/components/table"
+    "link": "/doc/table"
+  },
+  {
+    "name": "Theme Provider",
+    "link": "/doc/theme-provider"
   }
 ]

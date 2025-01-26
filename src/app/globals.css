@@ -2,48 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
-  --color-primary: #4285F4;
-  --color-secondary: #66757F;
-  --color-success : #34A853;
-  --color-warning : #FBBC05;
-  --color-error   : #EA4335;
-  --color-info    : #00FFFF;
-  --color-ghost   : transparent;
-  --color-base-100: #ffffff;
-  --color-base-200: #f5f9ff;
-  --color-base-300: #f1f1f4;
-  --color-base-400: #eaeaee;
-}
-
-.dark {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
-  --color-primary : #6633FF;
-  --color-secondary: #5b616d;
-  --color-success : #0e9d6e;
-  --color-warning : #d5a21f;
-  --color-error   : #cb3a3a;
-  --color-info    : #30a1d3;
-  --color-ghost   : transparent;
-  --color-base-100: #1f1f26;
-  --color-base-200: #141419;
-  --color-base-300: #0a0a0d;
-  --color-base-400: #000000;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
-}
-
 @layer base {
-  .table-hard {
-    @apply w-full border-collapse [&>*_th]:border [&>*_td]:border;
+  * {
+    @apply box-border;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    padding: 10px 0;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #47474b;
+    border-radius: 99px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 }
+
+@layer components {
+  .bg-primary-gradient {
+    @apply bg-gradient-to-r dark:from-violet-800 dark:via-fuchsia-800 dark:to-pink-800 from-violet-500 via-fuchsia-500 to-pink-500;
+  }
+
+  .text-base-100-content {
+    @apply text-zinc-900 dark:text-zinc-100;
+  }
+
+  .text-base-200-content {
+    @apply text-zinc-800 dark:text-zinc-200;
+  }
+}
+
 
