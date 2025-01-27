@@ -1,11 +1,11 @@
 "use client"
 
 import React from "react"
-import { MultilevelDropdown } from "knoxui-react"
+import { Dropdown } from "knoxui-react"
 import { motion } from "framer-motion"
 import CodeBlock from "@/components/CodeBlock"
 
-const MultilevelDropdownDoc = () => {
+const DropdownDoc = () => {
   const dropdownItems = [
     {
       label: "Home",
@@ -129,10 +129,10 @@ const MultilevelDropdownDoc = () => {
     >
       <motion.section className="mb-12 border-none !bg-transparent" variants={itemVariants}>
         <h1 className="text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-error">
-          Multilevel Dropdown Component
+          Dropdown Component
         </h1>
         <p className="mb-4">
-          The Multilevel Dropdown component allows users to create nested dropdown menus with multiple levels of
+          The Dropdown component allows users to create nested dropdown menus with multiple levels of
           hierarchy.
         </p>
       </motion.section>
@@ -164,7 +164,7 @@ const MultilevelDropdownDoc = () => {
       <motion.section className="mb-12" variants={itemVariants}>
         <h2 className="text-2xl font-bold mb-4">Usage</h2>
         <CodeBlock className="bg-gray-100 p-2 rounded mb-6">
-          {`import { MultilevelDropdown } from 'knoxui-react';
+          {`import { Dropdown } from 'knoxui-react';
 
 const dropdownItems = [
   {
@@ -195,7 +195,7 @@ const dropdownItems = [
   },
 ];
 
-<MultilevelDropdown
+<Dropdown
   items={dropdownItems}
   label="Menu"
   variant="primary"
@@ -209,27 +209,27 @@ const dropdownItems = [
         <div className="space-y-4">
           <div>
             <h3 className="text-xl font-bold mb-2">Basic Usage</h3>
-            <MultilevelDropdown items={dropdownItems} label="Menu" />
+            <Dropdown items={dropdownItems} label="Menu" />
           </div>
           <div>
             <h3 className="text-xl font-bold mb-2">Different Variants</h3>
             <div className="flex space-x-2">
-              <MultilevelDropdown items={dropdownItems} label="Primary" variant="primary" />
-              <MultilevelDropdown items={dropdownItems} label="Secondary" variant="secondary" />
-              <MultilevelDropdown items={dropdownItems} label="Success" variant="success" />
-              <MultilevelDropdown items={dropdownItems} label="Warning" variant="warning" />
-              <MultilevelDropdown items={dropdownItems} label="Error" variant="error" />
-              <MultilevelDropdown items={dropdownItems} label="Ghost" variant="ghost" />
+              <Dropdown items={dropdownItems} label="Primary" variant="primary" />
+              <Dropdown items={dropdownItems} label="Secondary" variant="secondary" />
+              <Dropdown items={dropdownItems} label="Success" variant="success" />
+              <Dropdown items={dropdownItems} label="Warning" variant="warning" />
+              <Dropdown items={dropdownItems} label="Error" variant="error" />
+              <Dropdown items={dropdownItems} label="Ghost" variant="ghost" />
             </div>
           </div>
           <div>
             <h3 className="text-xl font-bold mb-2">Different Sizes</h3>
             <div className="flex items-center space-x-2">
-              <MultilevelDropdown items={dropdownItems} label="XS" size="xs" />
-              <MultilevelDropdown items={dropdownItems} label="SM" size="sm" />
-              <MultilevelDropdown items={dropdownItems} label="MD" size="md" />
-              <MultilevelDropdown items={dropdownItems} label="LG" size="lg" />
-              <MultilevelDropdown items={dropdownItems} label="XL" size="xl" />
+              <Dropdown items={dropdownItems} label="XS" size="xs" />
+              <Dropdown items={dropdownItems} label="SM" size="sm" />
+              <Dropdown items={dropdownItems} label="MD" size="md" />
+              <Dropdown items={dropdownItems} label="LG" size="lg" />
+              <Dropdown items={dropdownItems} label="XL" size="xl" />
             </div>
           </div>
         </div>
@@ -249,5 +249,5 @@ const dropdownItems = [
   )
 }
 
-export default MultilevelDropdownDoc
+export default DropdownDoc
 
