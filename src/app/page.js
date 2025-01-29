@@ -26,7 +26,7 @@ export default function Home() {
             <Link href={"/doc/installation"}>
               <Button
                 variant="ghost"
-                size="large"
+                size="lg"
                 className="!border !border-white/20 !bg-white/10 !rounded-full transition-shadow w-44"
               >
                 Get Started
@@ -35,7 +35,7 @@ export default function Home() {
             <Link href="https://github.com/CoderKnox/knoxui-react" target="_blank">
               <Button
                 variant="ghost"
-                size="large"
+                size="lg"
                 className="!border !border-white/20 !bg-white/10 !rounded-full transition-shadow w-44"
               >
                 View on GitHub
