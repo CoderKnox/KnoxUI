@@ -132,7 +132,7 @@ const DropdownDoc = () => {
           Dropdown Component
         </h1>
         <p className="mb-4">
-          The Dropdown component allows users to create nested dropdown menus with multiple levels of
+          The Dropdown component allows users to create dropdown menus with optional nested items and multiple levels of
           hierarchy.
         </p>
       </motion.section>

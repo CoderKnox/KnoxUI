@@ -1,4 +1,4 @@
-import { Button, Input, Select, Radio, Checkbox, Table } from "knoxui-react";
+import { Button, Input, Select, Checkbox, Table } from "knoxui-react";
 import tableData from '../data/table.json';
 
 
@@ -13,18 +13,18 @@ const selectOptions = [
 ];
 
 const tableConfig = {
-  columns: [
-    { key: "buyerName", header: "Buyer Name", pin: "left", className: "font-bold" },
-    { key: "styleName", header: "Style Name", pin: "left" },
-    { key: "orderNumber", header: "Order Number", "search": false },
-    { key: "color", header: "Color" },
-    { key: "orderQuantity", header: "Order Quantity", dataType: "int", sum: true},
-    { key: "price", header: "Price/pcs", "dataType": "float" },
-    { key: "orderDate", header: "Order Date", dataType: "date", pin: "right"},
-    { key: "entryDate", header: "Entry Date", dataType: "datetime", currentFormat: "YYYY-MM-DDTHH:mm:ss.sssZ", sowFormat: "DD-MM-YYYY HH:mm:ss"}
+  data: [
+    { name: "Mohan", age: 30, city: "Gurugram", dob: "2000-01-05" },
+    { name: "Rohan", age: 25, city: "Agra", dob: "1999-02-12" },
+    { name: "Sohan", age: 27, city: "New Delhi", dob: "1998-03-08" },
   ],
-  data: tableData
-}
+  columns: [
+    { key: "name", header: "Name" },
+    { key: "age", header: "Age", dataType: "int", sum: true },
+    { key: "city", header: "City" },
+    { key: "dob", header: "DoB", dataType: "date", formatDate:"DD-MM-YYYY" },
+  ],
+};
 
 const components = [
   // Button
@@ -138,31 +138,20 @@ const components = [
   {
     title: "Radio",
     content: (
-      <div className="space-y-2">
-        {/* <RadioGroup
-          name="hello-radio"
-          onChange={(option) => console.log(option.value)}
-          selected="1"
-        >
-          <Radio label="Option 1" value="1" />
-          <Radio label="Option 2" value="2" />
-          <Radio label="Option 3" value="3" />
-        </RadioGroup> */}
-      </div>
+      <div className="space-y-2"></div>
     ),
   },
-  // Checkbox
+  // // Checkbox
   {
     title: "Checkbox",
     content: (
       <div className="space-y-2">
         <Checkbox 
           label="Subscribe to newsletter" 
-          size="l" 
-          color="success" 
-          checked
+          size="lg" 
+          variant="success" 
         />
-        <Checkbox color="success" checked />
+        <Checkbox variant="success" checked />
       </div>
     ),
   },
@@ -175,6 +164,9 @@ const components = [
         <Table 
           tableConfig={tableConfig}
           title="Custom Table with Row Merging"
+          size="m"
+          sum={true}
+          header={true}
         ></Table>
       </div>
     ),
